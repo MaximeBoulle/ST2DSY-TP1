@@ -110,31 +110,29 @@ class Semaphores:
         no matter in which order they are launched.        
         """
         semA = threading.Semaphore(1)
-        semB = threading.Semaphore(1)
-        semC = threading.Semaphore(1)
+        semB = threading.Semaphore(0)
+        semC = threading.Semaphore(0)
         
         def firefox():
             semA.acquire()
             print("Firefox is running...")
             threading.Event().wait(2)
             print("Firefox finished.")
-            semA.release()
             semB.release()
-            semC.release()
+
         def emacs():
             semB.acquire()
             print("Emacs is running...")
             threading.Event().wait(2)
             print("Emacs finished.")
-            semB.release()
             semC.release()
+            
         def vi():
             semC.acquire()
             print("Vi is running...")
             threading.Event().wait(2)
             print("Vi finished.")
             semC.release()
-            semA.release()
             
         threads = []
         # Create three threads
