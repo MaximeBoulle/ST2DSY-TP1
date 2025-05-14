@@ -154,6 +154,78 @@ class Semaphores:
         
         print("All applications have finished running.")
         
+    def runQ4(self):
+        """
+        4. Use semaphores to implement the following parallelized calculation (a+b)*(c-d)*(e+f)    
+        T1 runs (a+b) and stores the result in a shared table (1st available spot)   
+        T2 runs (c+d) and stores the result in a shared table (1st available spot)   
+        T3 runs (e+f) and stores the result in a shared table (1st available spot)   
+        T4 waits for two tasks to end and does the corresponding calculation   
+        T4 waits for the remaining task to end and does the final calculation then displays the result   
+        """
+        
+        sem = threading.Semaphore(3)
+        
+        def addition(a, b, semaphore):
+            """
+            This method performs addition and uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            res = a + b
+            print(f"Addition result: {res}")
+            semaphore.release()
+            
+            result.append(result)
+        
+        def multiplication(result, semaphore):
+            """
+            This method performs multiplication and uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            semaphore.acquire()
+
+            a = result[0]  # Assuming result[0] holds the first addition result
+            b = result[1]  # Assuming result[1] holds the second addition result
+            
+            res = a * b
+            
+            semaphore.acquire()
+            c = result[2]  # Assuming result[2] holds the third addition result
+            res = res * c
+            return res
+        
+        def subtraction(a, b, semaphore):
+            """
+            This method performs subtraction and uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            res = a - b
+            print(f"Subtraction result: {res}")
+            semaphore.release()
+            result.append(res)
+        
+        result = []
+                
+        T1 = threading.Thread(target=addition, args=(1, 2, sem))
+        T2 = threading.Thread(target=subtraction, args=(3, 1, sem))
+        T3 = threading.Thread(target=addition, args=(4, 5, sem))
+        T4 = threading.Thread(target=multiplication, args=(result, sem))
+        
+        T1.start()
+        T2.start()
+        T3.start()
+        T4.start()
+        
+        # Wait for all threads to finish
+        T1.join()
+        T2.join()
+        T3.join()
+        T4.join()
+        
+        print("Final result of the calculation: ", T4)
+        
+        
+
 def main():
     """
     Main function to run the exercises.
@@ -172,14 +244,17 @@ def main():
     if choice == '2' or choice == 'all':
         semaphores = Semaphores()
 
-        print("\n----- Running Semaphores Question 1 -----")
-        semaphores.runQ1()
+        # print("\n----- Running Semaphores Question 1 -----")
+        # semaphores.runQ1()
         
-        print("\n----- Running Semaphores Question 2 -----")
-        semaphores.runQ2()
+        # print("\n----- Running Semaphores Question 2 -----")
+        # semaphores.runQ2()
         
-        print("\n----- Running Semaphores Question 3 -----")
-        semaphores.runQ3()
+        # print("\n----- Running Semaphores Question 3 -----")
+        # semaphores.runQ3()
+        
+        print("\n----- Running Semaphores Question 4 -----")
+        semaphores.runQ4()
     
 if __name__ == "__main__":
     main()
