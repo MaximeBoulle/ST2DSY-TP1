@@ -9,33 +9,36 @@ class Semaphores:
     """
     Exercise 2: Synchronizing access using semaphores
     """
-    def __init__(self):
-        self.i = 65
-        self.semaphore = threading.Semaphore(1)
-
-    def increment(self):
-        """
-        This method increments the value of i while ensuring thread safety.
-        It uses a semaphore to control access to the shared resource.
-        """
-        self.semaphore.acquire()
-        self.i += 1
-        self.semaphore.release()
-        
-    def decrement(self):
-        """
-        This method decrements the value of i while ensuring thread safety.
-        It uses a semaphore to control access to the shared resource.
-        """
-        self.semaphore.acquire()
-        self.i -= 1
-        self.semaphore.release()
 
     def runQ1(self):
+        
+        i = 65
+        semaphore = threading.Semaphore(1)
+        
+        def increment():
+            """
+            This method increments the value of i while ensuring thread safety.
+            It uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            nonlocal i
+            i += 1
+            semaphore.release()
+            
+        def decrement():
+            """
+            This method decrements the value of i while ensuring thread safety.
+            It uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            nonlocal i
+            i -= 1
+            semaphore.release()
+        
         threads = []
         
-        T1 = threading.Thread(target=self.increment)
-        T2 = threading.Thread(target=self.decrement)
+        T1 = threading.Thread(target=increment)
+        T2 = threading.Thread(target=decrement)
         
         threads.append(T1)
         threads.append(T2)
@@ -49,7 +52,7 @@ class Semaphores:
             thread.join()
             
         # Print the final value of i
-        print(f"Final value of i: {self.i}")
+        print(f"Final value of i: {i}")
         
     def runQ2(self):
         """
@@ -91,23 +94,67 @@ class Semaphores:
             semC.release()
         
         # Create three threads
-        t1 = threading.Thread(target=process1)
-        t2 = threading.Thread(target=process2)
-        t3 = threading.Thread(target=process3)
+        T1 = threading.Thread(target=process1)
+        T2 = threading.Thread(target=process2)
+        T3 = threading.Thread(target=process3)
         
         # Start the threads
         print("Starting threads that will create a deadlock...")
-        t1.start()
-        t2.start()
-        t3.start()
+        T1.start()
+        T2.start()
+        T3.start()
         
     def runQ3(self):
         """
         Use semaphores to run 3 different applications (firefox, emacs, vi) in a predefined sequence 
         no matter in which order they are launched.        
         """
+        semA = threading.Semaphore(1)
+        semB = threading.Semaphore(1)
+        semC = threading.Semaphore(1)
         
+        def firefox():
+            semA.acquire()
+            print("Firefox is running...")
+            threading.Event().wait(2)
+            print("Firefox finished.")
+            semA.release()
+            semB.release()
+            semC.release()
+        def emacs():
+            semB.acquire()
+            print("Emacs is running...")
+            threading.Event().wait(2)
+            print("Emacs finished.")
+            semB.release()
+            semC.release()
+        def vi():
+            semC.acquire()
+            print("Vi is running...")
+            threading.Event().wait(2)
+            print("Vi finished.")
+            semC.release()
+            semA.release()
+            
+        threads = []
+        # Create three threads
+        T1 = threading.Thread(target=firefox)
+        T2 = threading.Thread(target=emacs)
+        T3 = threading.Thread(target=vi)
         
+        threads.append(T1)
+        threads.append(T2)
+        threads.append(T3)
+        
+        # Start the threads
+        print("Starting applications in a predefined sequence...")
+        for thread in threads:
+            thread.start()
+        # Wait for all threads to finish
+        for thread in threads:
+            thread.join()
+        
+        print("All applications have finished running.")
         
 def main():
     """
