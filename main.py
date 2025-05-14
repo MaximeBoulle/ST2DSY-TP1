@@ -177,6 +177,16 @@ class Semaphores:
             
             result.append(result)
         
+        def subtraction(a, b, semaphore):
+            """
+            This method performs subtraction and uses a semaphore to control access to the shared resource.
+            """
+            semaphore.acquire()
+            res = a - b
+            print(f"Subtraction result: {res}")
+            semaphore.release()
+            result.append(res)
+            
         def multiplication(result, semaphore):
             """
             This method performs multiplication and uses a semaphore to control access to the shared resource.
@@ -193,16 +203,6 @@ class Semaphores:
             c = result[2]  # Assuming result[2] holds the third addition result
             res = res * c
             return res
-        
-        def subtraction(a, b, semaphore):
-            """
-            This method performs subtraction and uses a semaphore to control access to the shared resource.
-            """
-            semaphore.acquire()
-            res = a - b
-            print(f"Subtraction result: {res}")
-            semaphore.release()
-            result.append(res)
         
         result = []
                 
