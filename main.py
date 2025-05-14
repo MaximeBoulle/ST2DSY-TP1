@@ -9,20 +9,19 @@ class Semaphores:
     """
     Exercise 2: Synchronizing access using semaphores
     """
+    def __init__(self):
+        self.i = 65
 
     def runQ1(self):
-        
-        i = 65
         semaphore = threading.Semaphore(1)
-        
+
         def increment():
             """
             This method increments the value of i while ensuring thread safety.
             It uses a semaphore to control access to the shared resource.
             """
             semaphore.acquire()
-            nonlocal i
-            i += 1
+            self.i += 1
             semaphore.release()
             
         def decrement():
@@ -31,8 +30,7 @@ class Semaphores:
             It uses a semaphore to control access to the shared resource.
             """
             semaphore.acquire()
-            nonlocal i
-            i -= 1
+            self.i -= 1
             semaphore.release()
         
         threads = []
@@ -52,7 +50,7 @@ class Semaphores:
             thread.join()
             
         # Print the final value of i
-        print(f"Final value of i: {i}")
+        print(f"Final value of i: {self.i}")
         
     def runQ2(self):
         """
@@ -244,17 +242,17 @@ def main():
     if choice == '2' or choice == 'all':
         semaphores = Semaphores()
 
-        # print("\n----- Running Semaphores Question 1 -----")
-        # semaphores.runQ1()
+        print("\n----- Running Semaphores Question 1 -----")
+        semaphores.runQ1()
         
         # print("\n----- Running Semaphores Question 2 -----")
         # semaphores.runQ2()
-        
+        #
         # print("\n----- Running Semaphores Question 3 -----")
         # semaphores.runQ3()
-        
-        print("\n----- Running Semaphores Question 4 -----")
-        semaphores.runQ4()
+        #
+        # print("\n----- Running Semaphores Question 4 -----")
+        # semaphores.runQ4()
     
 if __name__ == "__main__":
     main()
