@@ -158,7 +158,7 @@ class Semaphores:
         """
         4. Use semaphores to implement the following parallelized calculation (a+b)*(c-d)*(e+f)    
         T1 runs (a+b) and stores the result in a shared table (1st available spot)   
-        T2 runs (c+d) and stores the result in a shared table (1st available spot)   
+        T2 runs (c-d) and stores the result in a shared table (1st available spot)   
         T3 runs (e+f) and stores the result in a shared table (1st available spot)   
         T4 waits for two tasks to end and does the corresponding calculation   
         T4 waits for the remaining task to end and does the final calculation then displays the result   
@@ -172,10 +172,10 @@ class Semaphores:
             """
             semaphore.acquire()
             res = a + b
-            print(f"Addition result: {res}")
-            semaphore.release()
+            result.append(res)
             
-            result.append(result)
+            semaphore.release()
+
         
         def subtraction(a, b, semaphore):
             """
@@ -183,9 +183,9 @@ class Semaphores:
             """
             semaphore.acquire()
             res = a - b
-            print(f"Subtraction result: {res}")
-            semaphore.release()
             result.append(res)
+            semaphore.release()
+
             
         def multiplication(result, semaphore):
             """
@@ -193,7 +193,7 @@ class Semaphores:
             """
             semaphore.acquire()
             semaphore.acquire()
-
+            
             a = result[0]  # Assuming result[0] holds the first addition result
             b = result[1]  # Assuming result[1] holds the second addition result
             
@@ -202,7 +202,7 @@ class Semaphores:
             semaphore.acquire()
             c = result[2]  # Assuming result[2] holds the third addition result
             res = res * c
-            return res
+            result.append(res)
         
         result = []
                 
@@ -222,7 +222,7 @@ class Semaphores:
         T3.join()
         T4.join()
         
-        print("Final result of the calculation: ", T4)
+        print("Final result of the calculation: ", result[3])
         
         
 
